@@ -6,127 +6,140 @@
     <title>beyond the Oort</title>
     <link rel="icon" type="image/png" href="favicon.png"> <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
     <style>
-        @keyframes cursorFlicker{
-            0%,100%{opacity:1}
-            50%{opacity:0}
-        }
-        @keyframes charFadeIn{
-            from{opacity:0;transform:scale(.9)}
-            to{opacity:1;transform:scale(1)}
-        }
+    @keyframes cursorFlicker{
+        0%,100%{opacity:1}
+        50%{opacity:0}
+    }
+    @keyframes charFadeIn{
+        from{opacity:0;transform:scale(.9)}
+        to{opacity:1;transform:scale(1)}
+    }
 
-        body{
-            margin:0;
-            padding:0;
-            background-color:#fff;
-            min-height:100vh;
-            transition:none; 
-            opacity:1;
-            position:relative;
-            cursor:pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
+    body{
+        margin:0;
+        padding:0;
+        background-color:#fff;
+        min-height:100vh;
+        transition:none; 
+        opacity:1;
+        position:relative;
+        cursor:pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
 
-        #content-wrapper{
-            position:absolute;
-            top:50%;
-            left:50%;
-            transform:translate(-50%,-50%);
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            transition:transform 1.5s ease-in-out, opacity 1s ease;
-            z-index: 10;
-        }
-        .shifted #content-wrapper{
-            transform:translate(-50%,-180px)
-        }
+    #content-wrapper{
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        transition:transform 1.5s ease-in-out, opacity 1s ease;
+        z-index: 10;
+    }
+    .shifted #content-wrapper{
+        transform:translate(-50%,-180px)
+    }
 
-        #poem-container{
-            margin-bottom:30px;
-            text-align:center;
-            font-family:'Lora',serif;
-            font-size:1.5rem;
-            color:#686868;
-            max-width:110%;
-            line-height:1.4
-        }
+    #poem-container{
+        margin-bottom:30px;
+        text-align:center;
+        font-family:'Lora',serif;
+        font-size:1.5rem; /* Maximum font size for riddle */
+        color:#686868;
+        max-width:110%;
+        line-height:1.4
+    }
 
-        #poem-container p.poem-line {
-            opacity: 0;
-            margin: 5px 0; 
-            transition: opacity 2s ease-in-out; 
-        }
-        #poem-container p.poem-line.question {
-            margin: 5px;
-        }
+    #poem-container p.poem-line {
+        opacity: 0;
+        margin: 5px 0; 
+        transition: opacity 2s ease-in-out; 
+    }
+    #poem-container p.poem-line.question {
+        margin: 5px;
+    }
 
-        #display-container{
-            display:flex;
-            align-items:center;
-            flex-wrap:nowrap;
-            overflow:hidden;
-            font-family:'Lora',serif;
-            font-style:italic;
-            font-size:1.5rem;
-            color:#686868;
-            opacity:0;
-            transition:opacity 1s 1s ease-in-out
-        }
-        .shifted #display-container{
-            opacity:1
-        }
-        #display-output span{
-            display:inline-block;
-            opacity:0;
-            animation:charFadeIn .5s ease-in-out forwards;
-            padding:0;
-            transform-origin:center
-        }
+    #display-container{
+        display:flex;
+        align-items:center;
+        flex-wrap:nowrap;
+        overflow:hidden;
+        font-family:'Lora',serif;
+        font-style:italic;
+        font-size:1.5rem; /* Maximum font size for input display */
+        color:#686868;
+        opacity:0;
+        transition:opacity 1s 1s ease-in-out
+    }
+    .shifted #display-container{
+        opacity:1
+    }
+    #display-output span{
+        display:inline-block;
+        opacity:0;
+        animation:charFadeIn .5s ease-in-out forwards;
+        padding:0;
+        transform-origin:center
+    }
 
-        #custom-cursor{
-            width:1px;
-            height:1.8rem;
-            background-color:#686868;
-            margin-left:1px;
-            opacity:1;
-            transition:background-color .1s;
-            animation:cursorFlicker 1.5s infinite ease-in-out
-        }
+    #custom-cursor{
+        width:1px;
+        height:1.8rem;
+        background-color:#686868;
+        margin-left:1px;
+        opacity:1;
+        transition:background-color .1s;
+        animation:cursorFlicker 1.5s infinite ease-in-out
+    }
 
-        #hidden-input{
-            position:fixed;
-            top:-100px;
-            left:-100px;
-            opacity:0;
-            pointer-events:none
-        }
+    #hidden-input{
+        position:fixed;
+        top:-100px;
+        left:-100px;
+        opacity:0;
+        pointer-events:none
+    }
 
-        #video-wrapper {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 350px; 
-            max-width: 90vw;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1s ease;
-            z-index: 5;
+    #video-wrapper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 350px; 
+        max-width: 90vw;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1s ease;
+        z-index: 5;
+    }
+    video {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    #video-wrapper.fading-out {
+        opacity: 0 !important;
+        transition: opacity 1s ease;
+    }
+    
+    /* --- Responsive Font Scaling (New Media Query) --- */
+    @media (max-width: 600px) {
+        #poem-container {
+            font-size: 1.2rem;
         }
-        video {
-            width: 100%;
-            height: auto;
-            display: block;
+        #display-container {
+            font-size: 1.2rem;
         }
-        #video-wrapper.fading-out {
-            opacity: 0 !important;
-            transition: opacity 1s ease;
+        #custom-cursor {
+            height: 1.4rem; /* Adjusted cursor height for smaller font */
         }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div id="content-wrapper">
