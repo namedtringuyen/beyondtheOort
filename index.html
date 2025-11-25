@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>beyond the Oort</title>
+    <link rel="icon" type="image/png" href="favicon.png"> <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes cursorFlicker{
+            0%,100%{opacity:1}
+            50%{opacity:0}
+        }
+        @keyframes charFadeIn{
+            from{opacity:0;transform:scale(.9)}
+            to{opacity:1;transform:scale(1)}
+        }
+
+        body{
+            margin:0;
+            padding:0;
+            background-color:#fff;
+            min-height:100vh;
+            transition:none; 
+            opacity:1;
+            position:relative;
+            cursor:pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #content-wrapper{
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            transition:transform 1.5s ease-in-out, opacity 1s ease;
+            z-index: 10;
+        }
+        .shifted #content-wrapper{
+            transform:translate(-50%,-180px)
+        }
+
+        #poem-container{
+            margin-bottom:30px;
+            text-align:center;
+            font-family:'Lora',serif;
+            font-size:1.5rem;
+            color:#686868;
+            max-width:110%;
+            line-height:1.4
+        }
+
+        #poem-container p.poem-line {
+            opacity: 0;
+            margin: 5px 0; 
+            transition: opacity 2s ease-in-out; 
+        }
+        #poem-container p.poem-line.question {
+            margin: 5px;
+        }
+
+        #display-container{
+            display:flex;
+            align-items:center;
+            flex-wrap:nowrap;
+            overflow:hidden;
+            font-family:'Lora',serif;
+            font-style:italic;
+            font-size:1.5rem;
+            color:#686868;
+            opacity:0;
+            transition:opacity 1s 1s ease-in-out
+        }
+        .shifted #display-container{
+            opacity:1
+        }
+        #display-output span{
+            display:inline-block;
+            opacity:0;
+            animation:charFadeIn .5s ease-in-out forwards;
+            padding:0;
+            transform-origin:center
+        }
+
+        #custom-cursor{
+            width:1px;
+            height:1.8rem;
+            background-color:#686868;
+            margin-left:1px;
+            opacity:1;
+            transition:background-color .1s;
+            animation:cursorFlicker 1.5s infinite ease-in-out
+        }
+
+        #hidden-input{
+            position:fixed;
+            top:-100px;
+            left:-100px;
+            opacity:0;
+            pointer-events:none
+        }
+
+        #video-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px; 
+            max-width: 90vw;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+            z-index: 5;
+        }
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        #video-wrapper.fading-out {
+            opacity: 0 !important;
+            transition: opacity 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="content-wrapper">
+        <div id="poem-container">
+            <p class="poem-line">I dwell upon the hunter’s shoulder,</p>
+            <p class="poem-line">the spark that stirs the sleeping worlds.</p>
+            <p class="poem-line">I rise with the first pale light,</p>
+            <p class="poem-line">fade where the void devours the night,</p>
+            <p class="poem-line">and listen for the echoes of my own dying.</p>
+            <p class="poem-line question">I am...</p>
+        </div>
+        <div id="display-container">
+            <div id="display-output"></div>
+            <div id="custom-cursor"></div>
+        </div>
+    </div>
+    
+    <div id="video-wrapper">
+        <video id="constellation-video" muted playsinline>
+            <source src="orion.mp4" type="video/mp4">
+            </video>
+    </div>
+    <input type="text" id="hidden-input" spellcheck="false" autocomplete="off">
+
+    <script>
+        const REDIRECT_URL='https://fadjm6vrbvccb4e8nhaq5fahkrm7aeyf.tumblr.com/';
+        const ACCEPTED_PASSWORDS=['betelgeuse'];
+
+        const hiddenInput=document.getElementById('hidden-input');
+        const displayOutput=document.getElementById('display-output');
+        const customCursor=document.getElementById('custom-cursor');
+        const body=document.body;
+        const contentWrapper=document.getElementById('content-wrapper');
+        const videoWrapper=document.getElementById('video-wrapper');
+        const videoElement=document.getElementById('constellation-video');
+        const poemLines = document.querySelectorAll('.poem-line');
+        const LINE_DELAY_MS = 500; 
+
+        let currentText='';
+        let hasStarted=false;
+
+        function fadeInPoem() {
+            poemLines.forEach((line, index) => {
+                setTimeout(() => {
+                    line.style.opacity = '1';
+                }, index * LINE_DELAY_MS);
+            });
+        }
+
+        function updateDisplay(){
+            const newText=hiddenInput.value;
+            if(newText.length>currentText.length){
+                const char=newText[newText.length-1];
+                const span=document.createElement('span');
+                span.textContent=char===' '?'\u00A0':char;
+                displayOutput.appendChild(span)
+            }else if(newText.length<currentText.length){
+                if(displayOutput.lastElementChild){
+                    displayOutput.removeChild(displayOutput.lastElementChild)
+                }
+            }
+            currentText=newText
+        }
+
+        function checkInput(){
+            updateDisplay();
+            const enteredCode=currentText.trim().toLowerCase();
+            if(ACCEPTED_PASSWORDS.includes(enteredCode)){
+                console.log('Access Granted. Starting video transition...');
+                
+                hiddenInput.disabled=true;
+                customCursor.style.animation='none';
+                customCursor.style.opacity=0;
+
+                contentWrapper.style.opacity = '0';
+
+                setTimeout(() => {
+                    contentWrapper.style.display = 'none';
+                    videoWrapper.style.opacity = 0.8;
+                    videoElement.play();
+                }, 1000);
+            }
+        }
+
+        videoElement.onended = () => {
+            console.log("Video finished. Redirecting immediately.");
+            window.location.href = REDIRECT_URL; // Instant redirect
+        };
+
+
+        function focusInput(){
+            if(!hiddenInput.disabled){
+                hiddenInput.focus()
+            }
+        }
+
+        function handleInitialClick(){
+            if(!hasStarted){
+                hasStarted=true;
+                body.classList.add('shifted');
+                body.style.cursor='default';
+                setTimeout(focusInput, 1000); 
+                body.removeEventListener('click',handleInitialClick);
+                body.addEventListener('click',focusInput)
+            }
+        }
+
+        window.onload = fadeInPoem;
+
+        hiddenInput.addEventListener('input',checkInput);
+        body.addEventListener('click',handleInitialClick);
+        hiddenInput.addEventListener('keydown',handleInitialClick);
+    </script>
+</body>
+</html>
